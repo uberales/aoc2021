@@ -31,10 +31,10 @@ a = 0
 
 for i in range(len(dx)):
     dxi = dx[i]
-    dxy = dy[i]
+    dyi = dy[i]
     if dxi > 0:
         y += dxi * a
     else:
-        a = a + dxy
+        a = a + dyi
         
 print(x*y)
