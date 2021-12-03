@@ -33,7 +33,7 @@ program day01
     write(*,*) n_inc
 
     deallocate(differences)
-    
+
 !   part 2
 
     allocate(differences(n_lines - 3))
@@ -47,6 +47,7 @@ program day01
 
     write(*,*) n_inc
 
+    deallocate(differences)
 !
     deallocate(input_data)
 
