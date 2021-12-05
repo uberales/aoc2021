@@ -21,8 +21,6 @@ def get_points(c0, c1, diagonal = False):
         return [(x, c0[1]) for x in range(c0[0], c1[0] + diff_x, diff_x)]
     
     if diagonal:
-        diff_x = 1 if c1[0] > c0[0] else -1
-        diff_y = 1 if c1[1] > c0[1] else -1
         return [(x, y) for x, y in zip(range(c0[0], c1[0] + diff_x, diff_x), range(c0[1], c1[1] + diff_y, diff_y))]
         
     
