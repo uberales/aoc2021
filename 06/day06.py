@@ -30,7 +30,7 @@ school = get_school(data, n_days)
 
 print('Day {}: {} fish in the school'.format(n_days, len(school)))
 
-def next_day(states = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]):   
+def next_day(states):   
     s_0 = states.pop(0)
     states[6] += s_0
     states.append(s_0)
@@ -38,9 +38,8 @@ def next_day(states = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]):
     return states
 
 n_days = 256
-school = copy.deepcopy(data)
 states = [0 for i in range(9)]
-for f in school:
+for f in data:
     states[f] += 1
     
 for i in range(n_days):
