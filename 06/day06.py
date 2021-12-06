@@ -30,17 +30,14 @@ school = get_school(data, n_days)
 
 print('Day {}: {} fish in the school'.format(n_days, len(school)))
 
-def next_day(states):   
-    s_0 = states.pop(0)
-    states[6] += s_0
-    states.append(s_0)
-    
 n_days = 256
 states = [0 for i in range(9)]
 for f in data:
     states[f] += 1
     
 for i in range(n_days):
-    next_day(states)
+    s_0 = states.pop(0)
+    states[6] += s_0
+    states.append(s_0)
     
 print('Day {}: {} fish in the school'.format(n_days, sum(states)))
