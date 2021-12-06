@@ -35,14 +35,12 @@ def next_day(states):
     states[6] += s_0
     states.append(s_0)
     
-    return states
-
 n_days = 256
 states = [0 for i in range(9)]
 for f in data:
     states[f] += 1
     
 for i in range(n_days):
-    states = next_day(states)
+    next_day(states)
     
 print('Day {}: {} fish in the school'.format(n_days, sum(states)))
