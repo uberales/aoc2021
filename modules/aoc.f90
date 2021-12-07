@@ -56,7 +56,7 @@ module aoc
         
         character(len=4096) :: tmp, line
         
-        integer :: i, j, k, t
+        integer :: i, j, k
         
         tmp(1:4096) = ' '
         
@@ -68,8 +68,7 @@ module aoc
         k = 1
         do i = 1,4096            
             if (line(i:i).eq.','.and.j.gt.0) then
-                read(tmp(1:j), *) t
-                int_array(k) = t
+                read(tmp(1:j), *) int_array(k)
                 k = k + 1
                 j = 0
             else            
