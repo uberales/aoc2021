@@ -59,6 +59,7 @@ module aoc
         integer :: i, j, k
         
         tmp(1:4096) = ' '
+        int_array = 0
         
         open(7, file=trim(file_name))
         read(7, "(A)") line
@@ -79,7 +80,6 @@ module aoc
         
         if (j.gt.0) then
             read(tmp(1:j), *) int_array(k)
-            j = 0
         endif
         
         
