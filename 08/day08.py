@@ -58,7 +58,7 @@ def filter_matching(p_local, p_base, permutation):
     return p_local, p_base    
        
 def untangle(display):
-    global len_match, seg_match, base_pattern
+    global seg_match, base_pattern
     
     local_pattern = display[0]
     values = display[1]
