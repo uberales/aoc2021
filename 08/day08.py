@@ -72,7 +72,7 @@ def untangle(display):
         if len(v) == 1:
             permutation[v[0]] = seg_match[n][0]
         
-    for d in (1, 4, 7, 9):
+    for d in (1, 4, 7, 8):
         p_local = local_pattern[local_len_match[len(base_pattern[d])][0]]
         l, b = filter_matching(p_local, base_pattern[d], permutation)
         permutation[l] = b
