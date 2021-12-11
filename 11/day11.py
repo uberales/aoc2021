@@ -40,8 +40,7 @@ n_steps = 100
 tot_flashes = 0
 sync_i = 0
 
-for i in range(n_steps):
-    field += 1
+def flash(field):
     
     tot_flashing = set()
     prev_flashing = set()
@@ -61,38 +60,26 @@ for i in range(n_steps):
     if len(tot_flashing) > 0:
         field[t2a(list(tot_flashing))] = 0
 
-    n_flashes = np.sum(field == 0)
+    n_flashes = len(tot_flashing)
+    
+    return n_flashes
+    
+# part 1
+for i in range(n_steps):
+    field += 1
+    
+    n_flashes = flash(field)
+    
     tot_flashes += n_flashes
         
-    if n_flashes == n_r * n_c:
-        sync_i = i
-
 print(tot_flashes)
 
-
+# part 2
 while True:
     field += 1
     i += 1
     
-    tot_flashing = set()
-    prev_flashing = set()
-    
-    while True:
-        tot_flashing = get_flashing(field)
-        new_flashing = tot_flashing.difference(prev_flashing)
-        prev_flashing = tot_flashing
-        
-        if len(new_flashing) == 0:
-            break
-                
-        for pt in new_flashing:
-            neighbors = get_neighbors(pt)
-            field[neighbors] += 1        
-    
-    if len(tot_flashing) > 0:
-        field[t2a(list(tot_flashing))] = 0
-
-    n_flashes = np.sum(field == 0)
+    n_flashes = flash(field)
         
     if n_flashes == n_r * n_c:
         break
