@@ -42,19 +42,8 @@ paths_1 = []
 find_paths_1(paths_1, [], 'start')
 print(len(paths_1))
 
-def all_but_one(path, next_node):
-    next_path = list(path)
-    next_path.append(next_node)
-    
-    uniques = set([n for n in next_path if not(is_upper(n))])
-    counters = {3: 0, 2:0, 1:0}
-    for u in uniques:        
-        counters[next_path.count(u)] += 1       
 
-    return counters[2] <= 1 and counters[3] == 0
-
-def find_paths_2(paths, current_path, node):
-        
+def find_paths_2(paths, current_path, node, double_found = False):
     current_path.append(node)
     
     if node == 'end':
@@ -62,9 +51,18 @@ def find_paths_2(paths, current_path, node):
         return
     
     for next_node in net[node]:
-        if (is_upper(next_node) or all_but_one(current_path, next_node)) and next_node != 'start':
-            find_paths_2(paths, list(current_path), next_node)
-        
+        if is_upper(next_node):
+            find_paths_2(paths, list(current_path), next_node, double_found)
+        elif next_node != 'start':            
+            if double_found:
+                if next_node not in current_path:
+                    find_paths_2(paths, list(current_path), next_node, double_found)
+            else:
+                if current_path.count(next_node) <= 1:
+                    find_paths_2(paths, list(current_path), next_node, current_path.count(next_node) == 1)
+                
+                
+                        
 paths_2 = []
 
 find_paths_2(paths_2, [], 'start')
