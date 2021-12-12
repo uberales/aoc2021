@@ -53,13 +53,8 @@ def find_paths_2(paths, current_path, node, double_found = False):
     for next_node in net[node]:
         if is_upper(next_node):
             find_paths_2(paths, list(current_path), next_node, double_found)
-        elif next_node != 'start':            
-            if double_found:
-                if next_node not in current_path:
-                    find_paths_2(paths, list(current_path), next_node, double_found)
-            else:
-                if current_path.count(next_node) <= 1:
-                    find_paths_2(paths, list(current_path), next_node, current_path.count(next_node) == 1)
+        elif next_node != 'start' and ((double_found and next_node not in current_path) or (not double_found and current_path.count(next_node) <= 1)):
+            find_paths_2(paths, list(current_path), next_node, double_found or current_path.count(next_node) == 1)
                 
                 
                         
