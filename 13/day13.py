@@ -26,15 +26,14 @@ def show(grid):
             else:
                 s += ' '
         print(s)
-          
 
 def fold(pt, axis, loc):
     x = pt[0]
     y = pt[1]
     if axis == 'x' and x > loc:
-        x = 2 * loc - pt[0]
+        x = 2 * loc - x
     if axis == 'y' and y > loc:
-        y = 2 * loc - pt[1]
+        y = 2 * loc - y
     return (x, y)
     
 grid = set(data)
