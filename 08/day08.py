@@ -13,11 +13,12 @@ def l2d(line):
 
 with open('input.txt', mode='r') as f:
     data = [l2d(l) for l in f.readlines()]
+    
+# part 1
 
 segments = 'abcdefg'
 base_pattern = ['abcefg', 'cf', 'acdeg', 'acdfg', 'bcdf', 'abdfg', 'abdefg', 'acf', 'abcdefg', 'abcdfg']
 
-# part 1
 
 def get_len_match(pattern): 
     len_match = {}

@@ -30,6 +30,8 @@ with open('input.txt', mode='r') as f:
     if len(current) > 0:
         tables.append(np.array(current))
         
+# part 1
+
 def score(board):
     unmarked = board[board > 0]
     return sum(unmarked) - len(unmarked)
@@ -40,7 +42,6 @@ def check(board):
             return True
     return False
 
-# part 1
 
 tables_1 = copy.deepcopy(tables)
 

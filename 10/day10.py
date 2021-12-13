@@ -8,6 +8,8 @@ Created on Fri Dec 10 10:34:13 2021
 with open('input.txt', mode='r') as f:
     data = [l.strip() for l in f.readlines()]
 
+# part 1
+
 opening = '([{<'
 closing = ')]}>'
 scores_1 = {')': 3, ']': 57, '}': 1197, '>': 25137}
@@ -31,7 +33,8 @@ def get_illegal(line):
 illegals = [get_illegal(purge(line)) for line in data]
 points = [scores_1[il[0][1]] for il in illegals if len(il) > 0]
 print(sum(points))
-    
+
+# part 2
 
 def get_closing(line):
     return ''.join([closing[opening.index(line[-i - 1])] for i in range(len(line))])

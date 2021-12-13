@@ -20,7 +20,8 @@ with open('input.txt', mode='r') as f:
             net[c[1]].add(c[0])
         else:
             net[c[1]] = set([c[0]])
-        
+
+# part 1        
 
 def is_upper(s):
     return s == s.upper()
@@ -42,6 +43,7 @@ paths_1 = []
 find_paths_1(paths_1, [], 'start')
 print(len(paths_1))
 
+# part 2
 
 def find_paths_2(paths, current_path, node, double_found = False):
     current_path.append(node)

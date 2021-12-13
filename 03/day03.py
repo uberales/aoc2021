@@ -10,6 +10,7 @@ import numpy as np
 with open('input.txt', mode='r') as f:
     data = np.array([[int(s) for s in list(l.strip())] for l in f.readlines()])
 
+# part 1
 
 def get_bits(numbers):
     n_lines = len(numbers)
@@ -22,10 +23,12 @@ def b2d(bits):
 
 bits = get_bits(data)
 
-gamma = b2d(bits[1])
+gamma = int(bits[1], 2)
 epsilon = b2d(bits[0])
 
 print(gamma * epsilon)
+
+# part 2
 
 def filter_numbers(numbers, most_least, position = 0):
     if len(numbers) == 1:

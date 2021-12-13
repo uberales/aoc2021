@@ -10,6 +10,7 @@ import copy
 with open('input.txt', mode='r') as f:
     data = [int(s) for s in f.readline().strip().split(',')]
     
+# part 1
 
 def get_school(data, n_days):
     school = copy.deepcopy(data)
@@ -29,6 +30,8 @@ n_days = 80
 school = get_school(data, n_days)
 
 print('Day {}: {} fish in the school'.format(n_days, len(school)))
+
+# part 2
 
 n_days = 256
 states = [0 for i in range(9)]

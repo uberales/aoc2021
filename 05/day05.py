@@ -10,7 +10,9 @@ import re
 with open('input.txt', mode='r') as f:
     matches = re.findall('([0-9]*),([0-9]*) -> ([0-9]*),([0-9]*)', f.read())
     data = [((int(m[0]), int(m[1])), (int(m[2]), int(m[3]))) for m in matches]
-    
+
+# part 1
+
 def get_points(c0, c1, diagonal = False):    
     diff_x = 1 if c1[0] > c0[0] else -1
     diff_y = 1 if c1[1] > c0[1] else -1
@@ -40,7 +42,8 @@ for i, source in enumerate(data):
 overlapping = [pt for pt in field if len(field[pt]) > 1]
 
 print(len(overlapping))
-    
+
+# part 2    
 
 field = {}
 

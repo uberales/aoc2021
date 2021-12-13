@@ -2,7 +2,6 @@ import numpy as np
 
 with open('input.txt', mode='r') as f:
     data = np.array([int(l.strip()) for l in f.readlines()])
-    
 
 # part 1
 differences = data[1:] - data[0:-1]

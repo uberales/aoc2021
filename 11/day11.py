@@ -10,7 +10,8 @@ import numpy as np
 
 with open('input.txt', mode='r') as f:
     data = np.array([[int(c) for c in list(l.strip())] for l in f.readlines()])
-    
+
+# part 1
 
 field = np.array(data)
 n_r, n_c = np.shape(field)
@@ -64,7 +65,6 @@ def flash(field):
     
     return n_flashes
     
-# part 1
 for i in range(n_steps):
     field += 1
     
