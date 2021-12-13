@@ -27,6 +27,8 @@ def loc_py(file_path):
                 counting = False
             elif l[0:3] == '"""':
                 counting = True
+                continue
+            
             if counting:
                 if len(l) > 0 and l[0] != "#":
                     loc += 1
