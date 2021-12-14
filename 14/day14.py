@@ -48,7 +48,7 @@ print(counts[-1][1] - counts[0][1])
 def get_occurences(text, s):
     return len(re.findall('(?={0})'.format(re.escape(s)), text))
 
-def expand_2(doubles, rules):
+def expand_2(doubles, rules, letter_stats):
     def add_double(add_to, add_what, add_n):
         if add_what in add_to:
             add_to[add_what] += add_n
@@ -58,41 +58,26 @@ def expand_2(doubles, rules):
     new_doubles = {}
     
     for d in doubles:
-        if d[0] in rules:
-            d1 = (d[0][0] + rules[d[0]], d[1], False)
-            d2 = (rules[d[0]] + d[0][1], False, d[2])
+        if d in rules:
+            d1 = d[0] + rules[d]
+            d2 = rules[d] + d[1]
             
             add_double(new_doubles, d1, doubles[d])
             add_double(new_doubles, d2, doubles[d])
-                
+            
+            letter_stats[rules[d]] += doubles[d]
+            
             doubles[d] = 0
-        
-    for d in new_doubles:
-        add_double(doubles, d, new_doubles[d])
-
-def count_2(doubles):
-    letters = {l: 0 for l in set(list(''.join([k[0] for k in doubles.keys()])))}
-    for d in doubles:
-        letters[d[0][0]] += doubles[d]
-        letters[d[0][1]] += doubles[d]
-        if d[1]:
-            letters[d[0][0]] += 1
-        if d[2]:
-            letters[d[0][1]] += 1
-        
-    for l in letters:
-        letters[l] = letters[l] // 2
-        
-    counts = [(l, letters[l]) for l in letters]
+            
+    doubles.update(new_doubles)
     
-    return sorted(counts, key = lambda c: c[1])
-
 state_2 = ''.join(copy.deepcopy(init_state))
-doubles = {(state_2[i:i+2], i == 0, i + 2 == len(state_2)): get_occurences(state_2, state_2[i:i+2]) for i in range(len(state_2) - 1)}
+doubles = {state_2[i:i+2]: get_occurences(state_2, state_2[i:i+2]) for i in range(len(state_2) - 1)}
+letter_stats = {l: 1 for l in set([r[1] for r in rules])}
 
 n_steps = 40
 for i in range(n_steps):
-    expand_2(doubles, rules)
-
-counts = count_2(doubles)
+    expand_2(doubles, rules, letter_stats)
+    
+counts = sorted([(l, letter_stats[l]) for l in letter_stats], key = lambda c: c[1])
 print(counts[-1][1] - counts[0][1])
