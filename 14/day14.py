@@ -73,7 +73,7 @@ def expand_2(doubles, rules, letter_stats):
     
 state_2 = ''.join(init_state)
 doubles = {state_2[i:i+2]: get_occurences(state_2, state_2[i:i+2]) for i in range(len(state_2) - 1)}
-letter_stats = {l: 1 for l in set([r[1] for r in rules])}
+letter_stats = {l: 1 if l in state_2 else 0 for l in set([r[1] for r in rules])}
 
 n_steps = 40
 for i in range(n_steps):
