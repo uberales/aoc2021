@@ -15,54 +15,47 @@ with open('input.txt', mode='r') as f:
 n_r = len(data)
 n_c = len(data[0])
 
-def get_neighbors_next(pt):
-    return get_neighbors(pt, dirs = [(1, 0), (0, 1)])    
-
-def get_neighbors_prev(pt):
-    return get_neighbors(pt, dirs = [(-1, 0), (0, -1)])
-
-def get_neighbors(pt, dirs = [(1, 0), (0, 1), (-1, 0), (0, -1)]):
+def get_neighbors(pt, dirs = [(1, 0), (0, 1), (-1, 0), (0, -1)], r_max = n_r, c_max = n_c):
     r, c = pt
     n = []
     
     for dr, dc in dirs:
-        if r + dr >= 0 and r + dr < n_r and c + dc >= 0 and c + dc < n_c:
+        if r + dr >= 0 and r + dr < r_max and c + dc >= 0 and c + dc < c_max:
             n.append((r + dr, c + dc))
     
     return n
 
-def seed(data):
+def search(data):
     n_r = len(data)
     n_c = len(data[0])
     
-    minima = np.zeros(np.shape(data), dtype=int)   
+    minima = np.zeros(np.shape(data), dtype=int)
     
-    for d in range(1, 2 * n_c - 1):
-        pt = (d, 0)
-        for i in range(d + 1):
-            if pt[0] < n_r and pt[1] < n_c:
-                minima[pt[0], pt[1]] = min([minima[n[0],n[1]] + data[pt[0],pt[1]] for n in get_neighbors_prev(pt)])
-            pt = (pt[0] - 1, pt[1] + 1)
-    return minima
-
-def settle(minima):
-    while True:
-        flips = 0
-        for r in range(0, n_r):
-            for c in range(0, n_c):
-                pt = (r, c)
-                for n in get_neighbors(pt):
-                    if minima[r, c] > minima[n[0], n[1]] + data[r, c]:
-                        minima[r, c] = minima[n[0], n[1]] + data[r, c]
-                        flips += 1
-        if flips == 0:
-            break
+    to_search = set([(0, 0)])
+    
+    while len(to_search) > 0:
+        next_search = set([])
         
-minima = seed(data)
-settle(minima)
+        for pt in to_search:
+            for n in get_neighbors(pt, r_max = n_r, c_max = n_c):                
+                if minima[n[0], n[1]] == 0:
+                    minima[n[0], n[1]] = minima[pt[0], pt[1]] + data[n[0], n[1]] 
+                    next_search.add(n)
+                else:                    
+                    d_prev = minima[n[0], n[1]]
+                    d_next = minima[pt[0], pt[1]] + data[n[0], n[1]]
+                    if d_prev > d_next:
+                        minima[n[0], n[1]] = d_next
+                        next_search.add(n)
+        to_search = next_search
+    
+    return minima
+    
+        
+minima = search(data)
 
 print(minima[-1,-1])
-
+      
 # part 2
 
 def get_part_2(data):
@@ -86,10 +79,7 @@ def get_part_2(data):
     return data_2
 
 data = get_part_2(data)
-n_r = len(data)
-n_c = len(data[0])
 
-minima = seed(data)
-settle(minima)
+minima = search(data)
 
 print(minima[-1,-1])
