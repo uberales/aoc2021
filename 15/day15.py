@@ -7,81 +7,89 @@ Created on Wed Dec 15 09:48:22 2021
 
 import numpy as np
 
-with open('test.txt', mode='r') as f:
+with open('input.txt', mode='r') as f:
     data = np.array([[int(c) for c in list(l.strip())] for l in f.readlines()])
     
+# part 1    
+
 n_r = len(data)
 n_c = len(data[0])
 
-def t2a(tup):
-    return (np.array([t[0] for t in tup]), np.array([t[1] for t in tup]))
+def get_neighbors_next(pt):
+    return get_neighbors(pt, dirs = [(1, 0), (0, 1)])    
 
-def get_neighbors(pt):
+def get_neighbors_prev(pt):
+    return get_neighbors(pt, dirs = [(-1, 0), (0, -1)])
+
+def get_neighbors(pt, dirs = [(1, 0), (0, 1), (-1, 0), (0, -1)]):
     r, c = pt
     n = []
     
-    for dr, dc in [(1, 0), (0, 1), (-1, 0), (0, -1)]:
+    for dr, dc in dirs:
         if r + dr >= 0 and r + dr < n_r and c + dc >= 0 and c + dc < n_c:
             n.append((r + dr, c + dc))
     
     return n
 
-top_left = (0, 0)
-bottom_right = (n_r - 1, n_c - 1)
-
-def show(grid):
-    m0 = max([p[0] for p in grid])
-    m1 = max([p[1] for p in grid])
-    for y in range(m1 + 1):
-        s = ''
-        for x in range(m0 + 1):
-            if (y, x) in grid:
-                s += '{}'.format(data[y, x])
-            else:
-                s += ' '
-        print(s)
-
-def get_string(init_pt, target_pt, path):
-    stairs = [(1, 0), (0, 1)]
-    last = init_pt
-    i = 0
-    while last[0] != target_pt[0] or last[1] != target_pt[1]:
-        last = (last[0] + stairs[i % 2][0], last[1] + stairs[i % 2][1])
-        path.append(last)        
-        i += 1
-    return path
-
-def get_risk(path):
-    return np.sum(data[t2a(path)])  - data[0,0]
-
-def update(path, risk):
-    for i in range(len(path) - 2):
-        n_0 = set(get_neighbors(path[i]))
-        n_2 = set(get_neighbors(path[i + 2]))
-        common = n_0.intersection(n_2)
-        updates = [(path, risk)]
-        for n_1 in common:
-            new_path = list(path)
-            new_path[i + 1] = n_1
-            updates.append((new_path, get_risk(new_path)))
-
-        updates.sort(key=lambda r: r[1])
-                
-        if updates[0][1] < risk:
-            return updates[0]
-    return (path, risk)
-
-path = get_string(top_left, bottom_right, [top_left])
-risk = get_risk(path)
-
-
-while True:
-    result = update(path, risk)
-    if risk == result[1]:
-        break
+def seed(data):
+    n_r = len(data)
+    n_c = len(data[0])
     
-    path = result[0]
-    risk = result[1]
+    minima = np.zeros(np.shape(data), dtype=int)   
     
-show(path)
-print(risk)
+    for d in range(1, 2 * n_c - 1):
+        pt = (d, 0)
+        for i in range(d + 1):
+            if pt[0] < n_r and pt[1] < n_c:
+                minima[pt[0], pt[1]] = min([minima[n[0],n[1]] + data[pt[0],pt[1]] for n in get_neighbors_prev(pt)])
+            pt = (pt[0] - 1, pt[1] + 1)
+    return minima
+
+def settle(minima):
+    while True:
+        flips = 0
+        for r in range(0, n_r):
+            for c in range(0, n_c):
+                pt = (r, c)
+                for n in get_neighbors(pt):
+                    if minima[r, c] > minima[n[0], n[1]] + data[r, c]:
+                        minima[r, c] = minima[n[0], n[1]] + data[r, c]
+                        flips += 1
+        if flips == 0:
+            break
+        
+minima = seed(data)
+settle(minima)
+
+print(minima[-1,-1])
+
+# part 2
+
+def get_part_2(data):
+    data_2 = np.zeros((n_r*5, n_c*5), dtype=int)
+    data_2[0:n_r,0:n_c] = data
+    
+    temp = np.array(data)
+    
+    for r in range(1, 5):
+        temp = temp + 1
+        temp[temp == 10] = 1
+        data_2[n_r * r:n_r * (r + 1),0:n_c] = temp
+    
+    temp = data_2[:,0:n_c]
+    
+    for c in range(1, 5):
+        temp = temp + 1
+        temp[temp == 10] = 1
+        data_2[:,n_c * c:n_c * (c + 1)] = temp
+
+    return data_2
+
+data = get_part_2(data)
+n_r = len(data)
+n_c = len(data[0])
+
+minima = seed(data)
+settle(minima)
+
+print(minima[-1,-1])
