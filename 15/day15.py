@@ -25,37 +25,47 @@ def get_neighbors(pt, dirs = [(1, 0), (0, 1), (-1, 0), (0, -1)], r_max = n_r, c_
     
     return n
 
-def search(data):
+def dijkstra(data):
     n_r = len(data)
     n_c = len(data[0])
-    
-    minima = np.zeros(np.shape(data), dtype=int)
-    
-    to_search = set([(0, 0)])
-    
-    while len(to_search) > 0:
-        next_search = set([])
+       
+    minima = np.zeros(np.shape(data))
+    minima[:] = np.inf
+    minima[0,0] = 0
         
-        for pt in to_search:
-            for n in get_neighbors(pt, r_max = n_r, c_max = n_c):                
-                if minima[n[0], n[1]] == 0:
-                    minima[n[0], n[1]] = minima[pt[0], pt[1]] + data[n[0], n[1]] 
-                    next_search.add(n)
-                else:                    
-                    d_prev = minima[n[0], n[1]]
-                    d_next = minima[pt[0], pt[1]] + data[n[0], n[1]]
-                    if d_prev > d_next:
-                        minima[n[0], n[1]] = d_next
-                        next_search.add(n)
-        to_search = next_search
+    visited = set()
+    
+    def get_candidate(candidates):
+        dist = np.inf
+        result = None
+        for c in candidates:
+            if candidates[c] < dist:
+                result = c
+                dist = candidates[c]
+        return result    
+    
+    pt = (0, 0)        
+    candidates = {pt: 0}
+    
+    while len(candidates) > 0:
+        pt = get_candidate(candidates)
+        candidates.pop(pt)        
+        
+        for n in get_neighbors(pt, r_max = n_r, c_max = n_c):
+            if not n in visited:                
+                d_prev = minima[n[0], n[1]]
+                d_next = minima[pt[0], pt[1]] + data[n[0], n[1]]
+                if d_prev > d_next:
+                    minima[n[0], n[1]] = d_next
+                    candidates[n] = minima[n[0], n[1]]
+                    
+        visited.add(pt)
     
     return minima
-    
-        
-minima = search(data)
 
+minima = dijkstra(data)
 print(minima[-1,-1])
-      
+
 # part 2
 
 def get_part_2(data):
@@ -80,6 +90,5 @@ def get_part_2(data):
 
 data = get_part_2(data)
 
-minima = search(data)
-
+minima = dijkstra(data)
 print(minima[-1,-1])
