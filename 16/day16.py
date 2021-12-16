@@ -30,7 +30,6 @@ def read_packets(bin_str, packets, limit = None):
     type_id = int(bin_str[3:6], 2)
     value = None
     payload = []
-    length_id = None
     
     remainder = ''
     
@@ -62,7 +61,7 @@ def read_packets(bin_str, packets, limit = None):
                         
             remainder = read_packets(payload_str, payload, count)
                
-    packet = {'version': version, 'type_id': type_id, 'value': value, 'payload': payload, 'length_id': length_id}
+    packet = {'version': version, 'type_id': type_id, 'value': value, 'payload': payload}
     packets.append(packet)
     
     if len(remainder) > 0:
