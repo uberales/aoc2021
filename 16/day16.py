@@ -64,11 +64,10 @@ def read_packets(bin_str, packets, limit = None):
     packet = {'version': version, 'type_id': type_id, 'value': value, 'payload': payload}
     packets.append(packet)
     
-    if len(remainder) > 0:
-        if (limit is not None and limit > 1):
-            return read_packets(remainder, packets, limit - 1)
-        elif limit is None:
-            return read_packets(remainder, packets)
+    if (limit is not None and limit > 1):
+        return read_packets(remainder, packets, limit - 1)
+    elif limit is None:
+        return read_packets(remainder, packets)
     
     return remainder
 
