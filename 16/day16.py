@@ -57,7 +57,7 @@ def read_packets(bin_str, packets, limit = None):
             remainder = bin_str[7+15+length:]
             
         elif length_id == 1:
-            count = int(bin_str[7:7+11], 2) - 1
+            count = int(bin_str[7:7+11], 2)
             payload_str = bin_str[7+11:]
                         
             remainder = read_packets(payload_str, payload, count)
@@ -66,7 +66,7 @@ def read_packets(bin_str, packets, limit = None):
     packets.append(packet)
     
     if len(remainder) > 0:
-        if (limit is not None and limit > 0):
+        if (limit is not None and limit > 1):
             return read_packets(remainder, packets, limit - 1)
         elif limit is None:
             return read_packets(remainder, packets)
