@@ -28,6 +28,8 @@ def loc_py(file_path):
             elif l[0:3] == '"""':
                 counting = True
                 continue
+            elif l.replace(' ', '') == "#visualisation":
+                break            
             
             if counting:
                 if len(l) > 0 and l[0] != "#":
@@ -38,7 +40,7 @@ def loc_py(file_path):
                 
             if l.replace(' ', '') == '#part2':
                 pt2_loc = loc
-            
+                        
     return [loc, pt1_loc, pt2_loc - pt1_loc, loc - pt2_loc]
 
 def loc_f90(file_path):
