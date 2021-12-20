@@ -78,7 +78,7 @@ def correlate(reference, points):
             else:
                 diffs[d] = 1
     
-    candidates = sorted([(d, diffs[d]) for d in diffs if diffs[d] > 1], key=lambda c: c[1], reverse=True)
+    candidates = sorted([(d, diffs[d]) for d in diffs if diffs[d] > 11], key=lambda c: c[1], reverse=True)
     return len(candidates) > 0, candidates
 
 
