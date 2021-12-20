@@ -62,12 +62,6 @@ def rotate_list(vec_list):
     
     return [[rotated[i][j] for i in range(len(vec_list))] for j in range(24)]
 
-def flatten(arr2d):
-    r = []
-    for arr in arr2d:
-        r.extend(arr)
-    return r
-
 def correlate(reference, points):
     diffs = {}
     for r in reference:
@@ -97,9 +91,8 @@ def match(reference, scanners, matches):
             found = True
             candidates.sort(key=lambda c: c[0][1], reverse=True)
             winner = candidates[0]
-            pos = winner[0][0]
-            matches.append(pos)
-            new_points = [add(pt, pos) for pt in rotations[winner[1]]]
+            matches.append(winner[0][0])
+            new_points = [add(pt, winner[0][0]) for pt in rotations[winner[1]]]
             
             reference = reference.union(set(new_points))
                     
