@@ -1,91 +1,124 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Dec 19 11:54:12 2021
+Created on Mon Dec 20 11:58:39 2021
 
-@author: ales
 """
 
-import numpy as np
-
-with open('test.txt', mode='r') as f:
+with open('input.txt', mode='r') as f:
     lines = [l.strip() for l in f.readlines()]
+    
     scanners = []
-    scanner = []
-    for i, l in enumerate(lines):
-        if len(l) == 0 or i == len(lines) - 1:
-            scanners.append(np.array(scanner, dtype=int))
-        elif l[0:3] == '---':
-            scanner = []
+    s = []
+    
+    for l in lines:
+        if l[0:3] == '---':
+            s = []
+        elif len(l) == 0:
+            scanners.append(s)
         else:
-            vals = [int(v) for v in l.split(',')]
-            scanner.append(vals)
+            s.append(tuple(int(c) for c in l.split(',')))
+            
+    scanners.append(s)         
     
-rot_x90 = np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]], dtype=int)
-rot_y90 = np.array([[0, 0, 1], [0, 1, 0], [-1, 0, 0]], dtype=int)
-rot_z90 = np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]], dtype=int)
+# part 1
+    
+def add(t1, t2):
+    return tuple(e1+e2 for e1, e2 in zip(t1, t2))
 
-test = np.array([1, 2, 3], dtype=int)
+def diff(t1, t2):
+    return tuple(e1-e2 for e1, e2 in zip(t1, t2))
 
-def get_rotations(vec_list, mat, n_mul = 3):
-    all_r = []
-    for i in range(n_mul):
-        r = [np.matmul(mat, v) for v in vec_list]
-        all_r.extend(r)
-        mat = np.matmul(mat, mat)
-    return all_r
+def mul(a, v):
+    return tuple(sum([a[i][j]*v[j] for j in range(len(v))]) for i in range(len(a)))
 
-def get_all_rotations(vec):
+rot90 = {
+    'x': ((1, 0, 0), (0, 0, -1), (0, 1, 0)),
+    'y': ((0, 0, 1), (0, 1, 0), (-1, 0, 0)),
+    'z': ((0, -1, 0), (1, 0, 0), (0, 0, 1))
+}
+
+def get_rotations(v):
     # thanks https://stackoverflow.com/questions/16452383/how-to-get-all-24-rotations-of-a-3-dimensional-array
-    r = [vec]
-    r.append(np.matmul(rot_x90, vec))
-    r.append(np.matmul(rot_y90, vec))
-    r.append(np.matmul(rot_z90, vec))    
-    r.append(np.matmul(np.matmul(rot_x90, rot_x90), vec))
-    r.append(np.matmul(np.matmul(rot_x90, rot_y90), vec))
-    r.append(np.matmul(np.matmul(rot_x90, rot_z90), vec))    
-    r.append(np.matmul(np.matmul(rot_y90, rot_x90), vec))   
-    r.append(np.matmul(np.matmul(rot_y90, rot_y90), vec))    
-    r.append(np.matmul(np.matmul(rot_z90, rot_y90), vec))    
-    r.append(np.matmul(np.matmul(rot_z90, rot_z90), vec))    
-    r.append(np.matmul(np.matmul(np.matmul(rot_x90, rot_x90), rot_x90), vec))    
-    r.append(np.matmul(np.matmul(np.matmul(rot_x90, rot_x90), rot_y90), vec))    
-    r.append(np.matmul(np.matmul(np.matmul(rot_x90, rot_x90), rot_z90), vec))        
-    r.append(np.matmul(np.matmul(np.matmul(rot_x90, rot_y90), rot_x90), vec))    
-    r.append(np.matmul(np.matmul(np.matmul(rot_x90, rot_y90), rot_y90), vec))        
-    r.append(np.matmul(np.matmul(np.matmul(rot_x90, rot_z90), rot_z90), vec))
-    r.append(np.matmul(np.matmul(np.matmul(rot_y90, rot_x90), rot_x90), vec))       
-    r.append(np.matmul(np.matmul(np.matmul(rot_y90, rot_y90), rot_y90), vec))    
-    r.append(np.matmul(np.matmul(np.matmul(rot_z90, rot_z90), rot_z90), vec))   
-    r.append(np.matmul(np.matmul(np.matmul(np.matmul(rot_x90, rot_x90), rot_x90), rot_y90), vec))     
-    r.append(np.matmul(np.matmul(np.matmul(np.matmul(rot_x90, rot_x90), rot_y90), rot_x90), vec))     
-    r.append(np.matmul(np.matmul(np.matmul(np.matmul(rot_x90, rot_y90), rot_x90), rot_x90), vec))     
-    r.append(np.matmul(np.matmul(np.matmul(np.matmul(rot_x90, rot_y90), rot_y90), rot_y90), vec))         
-    return r
-
-def correlate(points, candidates):
-    corr_table = np.zeros((len(points), len(candidates), 3), dtype = int)
-    vals = []
-    for p in range(len(points)):
-        for c in range(len(candidates)):
-            corr_table[p, c, :] = points[p] - candidates[c]
-            vals.append(corr_table[p, c, :])
-    unique = np.unique(vals, axis=0)
-    counts = [(u, len([v for v in vals if (u == v).all()])) for u in unique]
+    def rot(v, axes = []):
+        axes.reverse()
+        for a in axes:
+            v = mul(rot90[a], v)
+        return v
     
-    return vals, unique, sorted(counts, key=lambda c: c[1], reverse=True)
+    result = [rot(v)]
+    rotations = ['x', 'y', 'z', 
+                 'xx', 'xy', 'xz', 'yx', 'yy', 'zy', 'zz', 
+                 'xxx', 'xxy', 'xxz', 'xyx', 'xyy', 'xzz', 'yxx', 'yyy', 'zzz',
+                 'xxxy', 'xxyx', 'xyxx', 'xyyy']
+    result.extend([rot(v, list(r)) for r in rotations])
+    
+    return result
 
-r = get_all_rotations(test)
+def rotate_list(vec_list):
+    rotated = []
+    for v in vec_list:
+        rotated.append(get_rotations(v))
+    
+    return [[rotated[i][j] for i in range(len(vec_list))] for j in range(24)]
 
-points = np.array(scanners[0])
+def correlate(reference, points):
+    diffs = {}
+    for r in reference:
+        for p in points:
+            d = diff(r, p)
+            if d in diffs:
+                diffs[d] += 1
+            else:
+                diffs[d] = 1
+    
+    candidates = sorted([(d, diffs[d]) for d in diffs if diffs[d] > 11], key=lambda c: c[1], reverse=True)
+    return len(candidates) > 0, candidates
 
-for i in range(1, len(scanners)):
-    scanner = scanners[i]
-    rotated = [get_all_rotations(vec) for vec in scanner]
-    for j in range(24):
-        s_ver = np.array([rotated[k][j] for k in range(len(scanner))])
-        ct = correlate(points, s_ver)        
-        if len(ct[0]) != len(ct[1]):
-            print(j, ct[2][0])
-    break
 
+def match(reference, scanners, matches):
+    unmatched = []
+    for s_i, s in enumerate(scanners):
+        rotations = rotate_list(s)
+        candidates = []
+        found = False
+        for i, points in enumerate(rotations):
+            c = correlate(reference, points)
+            if c[0]:
+                candidates.append((c[1][0], i))
+                
+        if len(candidates) > 0:
+            found = True
+            candidates.sort(key=lambda c: c[0][1], reverse=True)
+            winner = candidates[0]
+            matches.append(winner[0][0])
+            new_points = [add(pt, winner[0][0]) for pt in rotations[winner[1]]]
+            
+            reference = reference.union(set(new_points))
+                    
+        if not found:
+            unmatched.append(s)
+        
+    return reference, unmatched
+
+reference = set(scanners[0])
+unmatched = scanners[1:]
+matches = [(0,0,0)]
+while len(unmatched) > 0:
+    reference, unmatched = match(reference, unmatched, matches)
+    print("remaining", len(unmatched))
+
+print(len(reference))
+
+# part 2
+
+def dist(t1, t2):
+    return sum([abs(v) for v in diff(t2, t1)])
+
+max_dist = 0
+
+for m1 in matches:
+    for m2 in matches:
+        max_dist = max(max_dist, dist(m1, m2))
+        
+print(max_dist)
