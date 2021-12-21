@@ -5,11 +5,11 @@ Created on Tue Dec 21 10:00:15 2021
 
 """
 
-from pprint import pprint
-
 with open('input.txt', mode='r') as f:
     positions = [int(l.strip().split(' ')[-1]) for l in f.readlines()]
-    
+
+# part 1
+
 def roll(n):
     return sum([i for i in range(n + 1, n + 4)]), (n + 3) % 100
 
@@ -44,17 +44,14 @@ pos_a = positions[0] - 1
 pos_b = positions[1] - 1
 print(play_1(pos_a, pos_b))
 
+# part 2
 
-def sums_tot(n):
+def sums(n):
     all_sums = []
     for i in range(1, n + 1):
         for j in range(1, n + 1):
             for k in range(1, n + 1):
                 all_sums.append(i+j+k)
-    return all_sums
-
-def sums(n):
-    all_sums = sums_tot(n)
     uniques = list(set(all_sums))
     return uniques, [len([s for s in all_sums if s == u]) for u in uniques]
 
