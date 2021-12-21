@@ -62,7 +62,7 @@ all_sums, multiplicities = sums(3)
 
 cache = {}
 
-def play_r(state):
+def play_2(state):
     if state in cache:
         return cache[state]
     wins = [0, 0]        
@@ -88,7 +88,7 @@ def play_r(state):
                 else:
                     next_state = (0, state[1], state[2], pos, sco, mul)
                     
-                r_wins = play_r(next_state)
+                r_wins = play_2(next_state)
                 wins[0] += r_wins[0]
                 wins[1] += r_wins[1]
     
@@ -97,5 +97,5 @@ def play_r(state):
         
     return wins
 
-wins = play_r((0, pos_a, 0, pos_b, 0, 1))
+wins = play_2((0, pos_a, 0, pos_b, 0, 1))
 print(max(wins))
