@@ -14,10 +14,10 @@ with open('input.txt', mode='r') as f:
 
 """
       bul -- bur
-      / :    /:
-    ful -- fur:
-     | bll  |blr
-     |;     |;
+      / :    /|
+    ful -- fur|
+     | bll .|blr
+     |;     |/
     fll -- flr
     
     ^ /
@@ -141,6 +141,15 @@ class Box:
     
     def cut_line(self, line, ax):
         def get_nodes(l0, l1, c0, c1):
+            # This is worth a comment for future me:
+            # First number is the coordinate, second is the direction we
+            # allow the interval to end (-1 as a left bound, 1 as a right bound)
+            # at this particular coordinate. Points on the cube can be any 
+            # bound of any interval, points on the line can be only outer
+            # bounds -- meaning that we can add/subtract one cell and flip
+            # the boundary rule for the cube. Selecting unique endpoints and
+            # sorting according to coordinate and boundary rule will produce
+            # all the interval endpoints in the correct order.
             bounds = [(l0, -1), (l1, 1), (c0-1,1), (c0, -1), (c1,1), (c1+1, -1)]
             bounds = [b for b in bounds if b[0] >= l0 and b[0] <= l1]
             bounds = sorted(set(bounds))
